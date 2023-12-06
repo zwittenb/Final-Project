@@ -1,7 +1,7 @@
 import requests
 import sqlite3
 import json
-import osc
+import os
 
 def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
     games_url = "https://api.collegefootballdata.com/games"
