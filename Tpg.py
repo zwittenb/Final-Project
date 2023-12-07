@@ -20,7 +20,7 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
 
 def create_table(cursor, conn, total_data):
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS michigans(
+        CREATE TABLE IF NOT EXISTS michigans_total_football_score(
             id INTEGER PRIMARY KEY,
             season INTEGER,
             week INTEGER,
@@ -30,7 +30,7 @@ def create_table(cursor, conn, total_data):
         )
     ''')
     conn.commit()
-    cursor.execute("SELECT COUNT(*) FROM michigans")
+    cursor.execute("SELECT COUNT(*) FROM michigans_total_football_score")
     existing_rows = cursor.fetchone()[0]
     counter = 0
     for key, value in total_data.items():
@@ -38,13 +38,13 @@ def create_table(cursor, conn, total_data):
         if counter >= existing_rows and counter <= existing_rows + 25:
             game = total_data[key]
             cursor.execute('''
-                INSERT OR IGNORE INTO michigans (id, season, week, home_points, away_points)
+                INSERT OR IGNORE INTO michigans_total_football_score (id, season, week, home_points, away_points)
                 VALUES (?, ?, ?, ?, ?)
             ''', (game['id'], game['season'], game['week'], game.get('home_points', None), game.get('away_points', None)))
             conn.commit()
     
     existing_rows += 25
-    cursor.execute("UPDATE sqlite_sequence SET seq=? WHERE name='michigan'", (existing_rows,))
+    
     conn.commit()
                 
 
