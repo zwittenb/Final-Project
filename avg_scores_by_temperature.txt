@@ -1,0 +1,2 @@
+Average scores below 25 degrees: 27.644444444444446
+Average scores above 25 degrees: 31.16949152542373
