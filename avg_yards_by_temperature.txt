@@ -1,2 +1,0 @@
-Average Yards Per Attempt (Temp < 50°F): 8.19
-Average Yards Per Attempt (Temp >= 50°F): 7.69

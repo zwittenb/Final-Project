@@ -177,7 +177,7 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
 
 # Function to create a database connection
 def create_database():
- conn = sqlite3.connect("final17.db")
+ conn = sqlite3.connect("final18.db")
  cursor = conn.cursor()
  return cursor, conn
 

@@ -251,7 +251,7 @@ def create_seasonal_bar_charts(seasonal_averages):
     plt.xticks(seasons)  # Ensure each season is labeled
     plt.show()
 if __name__ == "__main__":
-    db_path = "final10.db"  # Replace with your actual database file path
+    db_path = "final17.db"  # Replace with your actual database file path
     output_file = "avg_scores_by_temperature_range.txt"
     avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65 = calculate_temp_and_score(db_path, output_file)
     create_bar_chart(avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65)

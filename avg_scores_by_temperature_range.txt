@@ -1,4 +1,4 @@
-Average scores for 25-35 degrees: 30.0
-Average scores for 35-45 degrees: 27.0
-Average scores for 45-55 degrees: 28.0
-Average scores for 55-65 degrees: 27.32
+Average scores for 25-35 degrees: 29.77777777777778
+Average scores for 35-45 degrees: 23.88888888888889
+Average scores for 45-55 degrees: 29.05263157894737
+Average scores for 55-65 degrees: 31.76
