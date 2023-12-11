@@ -101,8 +101,8 @@ def calculate_yards_per_attempt(db_path, output_file):
     # Calculate averages
     avg_yards_25_35 = sum(yards_25_35) / len(yards_25_35) if yards_25_35 else 0
     avg_yards_35_45 = sum(yards_35_45) / len(yards_35_45) if yards_35_45 else 0
-    avg_yards_45_55 = sum(yards_45_55) / len(yards_45_55) if yards_25_35 else 0
-    avg_yards_55_65 = sum(yards_55_65) / len(yards_55_65) if yards_35_45 else 0
+    avg_yards_45_55 = sum(yards_45_55) / len(yards_45_55) if yards_45_55 else 0
+    avg_yards_55_65 = sum(yards_55_65) / len(yards_55_65) if yards_55_65 else 0
 
 
     return avg_yards_25_35, avg_yards_35_45, avg_yards_45_55, avg_yards_55_65
@@ -251,7 +251,7 @@ def create_seasonal_bar_charts(seasonal_averages):
     plt.xticks(seasons)  # Ensure each season is labeled
     plt.show()
 if __name__ == "__main__":
-    db_path = "final7.db"  # Replace with your actual database file path
+    db_path = "final10.db"  # Replace with your actual database file path
     output_file = "avg_scores_by_temperature_range.txt"
     avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65 = calculate_temp_and_score(db_path, output_file)
     create_bar_chart(avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65)

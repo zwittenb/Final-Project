@@ -73,7 +73,7 @@ def clean_up_temp_data():
                        "2023-09-09", "2023-09-16", "2023-09-23", "2023-10-14", "2023-11-04", "2023-11-25"]
      },
      "away": {
-         "South Bend": ["2014-09-06", "2018-09-01"],
+         "South Bend": ["2014-09-06", ],
          "New Jersey": ["2014-10-04", "2016-10-08", "2018-11-10", "2020-11-21", "2022-11-05"],
          "East Lansing": ["2014-10-25", "2016-10-29", "2018-10-20", "2021-10-30", "2023-10-21"],
          "Evanston": ["2014-11-08", "2018-09-29"],
@@ -145,7 +145,11 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
       response = requests.get(games_url, params={"team": "Michigan", "year": year}, headers=headers)
       games_data_for_each_year = json.loads(response.text)
       for game in games_data_for_each_year:
+          if game['season'] > 2020 and game['week'] > 13:
+                continue
+
           total_data[game['id']] = game
+            
   return total_data
 
 
@@ -173,7 +177,7 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
 
 # Function to create a database connection
 def create_database():
- conn = sqlite3.connect("final7.db")
+ conn = sqlite3.connect("final17.db")
  cursor = conn.cursor()
  return cursor, conn
 
@@ -228,86 +232,7 @@ def create_weather_table(cursor, conn, sorted_all_data):
 
  existing_rows += 25
  conn.commit()
-def create_dates_table(cursor, conn):
- date_list = [
- "2014-08-30", "2014-09-13", "2014-09-20", "2014-09-27", "2014-10-11", "2014-11-01", "2014-11-22",
- "2015-09-12", "2015-09-19", "2015-09-26", "2015-10-10", "2015-10-17", "2015-11-07", "2015-11-28",
- "2016-09-03", "2016-09-10", "2016-09-17", "2016-09-24", "2016-10-01", "2016-10-22", "2016-11-05",
- "2016-11-19", "2017-09-09", "2017-09-16", "2017-10-07", "2017-10-28", "2017-11-04", "2017-11-25",
- "2018-09-08", "2018-09-15", "2018-09-22", "2018-10-06", "2018-10-13", "2018-11-03", "2018-11-17",
- "2019-08-31", "2019-09-07", "2019-09-28", "2019-10-05", "2019-10-26", "2019-11-16", "2019-11-30",
- "2020-10-31", "2020-11-14", "2020-11-28", "2021-09-04", "2021-09-11", "2021-09-18", "2021-09-25",
- "2021-10-23", "2021-11-06", "2021-11-27", "2022-09-17", "2022-09-03", "2022-09-10", "2022-09-24",
- "2022-10-15", "2022-10-29", "2022-11-12", "2022-11-19", "2023-09-02", "2023-09-09", "2023-09-16",
- "2023-09-23", "2023-10-14", "2023-11-04", "2023-11-25", "2014-09-06", "2018-09-01", "2014-10-04",
- "2016-10-08", "2018-11-10", "2020-11-21", "2022-11-05", "2014-10-25", "2016-10-29", "2018-10-20",
- "2021-10-30", "2023-10-21", "2014-11-08", "2018-09-29", "2014-11-29", "2016-11-26", "2018-11-24",
- "2022-11-26", "2015-10-03", "2017-11-11", "2019-11-02", "2021-11-20", "2023-11-18", "2015-09-03",
- "2015-10-31", "2020-10-24", "2023-10-07", "2015-11-14", "2017-10-14", "2019-11-23", "2020-11-07",
- "2022-10-08", "2015-11-21", "2017-10-21", "2019-10-19", "2021-11-13", "2023-11-11", "2016-11-12",
- "2022-10-01", "2017-09-02", "2017-09-23", "2017-11-18", "2019-09-21", "2021-10-02", "2019-10-12",
- "2021-10-09", "2023-09-30"]
 
-
-
-
-
-
-
-
- date_list2 = sorted(date_list)
- cursor.execute('''
-     CREATE TABLE IF NOT EXISTS dates(
-         id INTEGER PRIMARY KEY,
-         date TEXT UNIQUE
-     )
- ''')
- conn.commit()
-
-
-
-
-
-
-
-
- cursor.execute("SELECT COUNT(*) FROM dates")
- existing_rows = cursor.fetchone()[0]
-
-
-
-
-
-
-
-
- counter = 0
- for date in date_list2:
-     counter += 1
-     if counter > existing_rows and counter <= existing_rows + 25:
-         cursor.execute('''
-         INSERT OR IGNORE INTO dates(date)
-         VALUES (?)
-     ''', (date,))
-     conn.commit()
-
-
-
-
-
-
-
-
- existing_rows += 25
-
-
-
-
-
-
-
-
- conn.commit()
 
 
 
@@ -401,45 +326,39 @@ def create_ya_table(cursor, conn, data_to_insert):
  cursor.execute('''
  CREATE TABLE IF NOT EXISTS michigan_yards_per_attempt (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
-     date TEXT,
-     yards_per_attempt REAL,
-     UNIQUE(date)
+     yards_per_attempt REAL
  )
  ''')
  conn.commit()
  cursor.execute("SELECT COUNT(*) FROM michigan_yards_per_attempt")
  existing_rows = cursor.fetchone()[0]
  counter = 0
-
-
-
-
-
-
-
-
  sorted_data = sorted(data_to_insert.items(), key=lambda x: x[0])  # Sort the data by date
-
-
-
-
-
-
-
-
  for date, y_a in sorted_data:
      counter += 1
      if counter > existing_rows and counter <= existing_rows + 24:
-         cursor.execute('''INSERT OR IGNORE INTO michigan_yards_per_attempt (date, yards_per_attempt) VALUES (?, ?)''', (date, y_a))
+         cursor.execute('''INSERT OR IGNORE INTO michigan_yards_per_attempt (yards_per_attempt) VALUES (?)''', (y_a,))
      conn.commit()
+ existing_rows += 25
+ conn.commit()
 
-
-
-
-
-
-
-
+def create_date_table(cursor, conn, data_to_insert):
+ cursor.execute('''
+ CREATE TABLE IF NOT EXISTS dates (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     date TEXT UNIQUE
+ )
+ ''')
+ conn.commit()
+ cursor.execute("SELECT COUNT(*) FROM dates")
+ existing_rows = cursor.fetchone()[0]
+ counter = 0
+ sorted_data = sorted(data_to_insert.items(), key=lambda x: x[0])  # Sort the data by date
+ for date, y_a in sorted_data:
+     counter += 1
+     if counter > existing_rows and counter <= existing_rows + 24:
+         cursor.execute('''INSERT OR IGNORE INTO dates (date) VALUES (?)''', (date,))
+     conn.commit()
  existing_rows += 25
  conn.commit()
 def main():
@@ -455,13 +374,14 @@ def main():
        football_data = fetch_and_store_michigan_home_scores(api_key, cursor, conn)
        create_football_scores_table(cursor, conn, football_data)
       
-       create_dates_table(cursor, conn)
+       
        all_years_data = {}
        for year in range(2014, 2023):
            year_data = get_yards_per_attempt(year)
            all_years_data.update(year_data)
    
        create_ya_table(cursor, conn, all_years_data)
+       create_date_table(cursor, conn, all_years_data)
   
        conn.close()
    except Exception as e:
