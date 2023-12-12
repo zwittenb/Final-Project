@@ -1,6 +1,7 @@
 import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 def connect_db(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -102,8 +103,14 @@ def calculate_yards_per_attempt(db_path, output_file):
     avg_yards_45_55 = sum(yards_45_55) / len(yards_45_55) if yards_45_55 else 0
     avg_yards_55_65 = sum(yards_55_65) / len(yards_55_65) if yards_55_65 else 0
 
+    with open(output_file, mode='w', newline='') as file:
+        file.write(f'Temperature Range: 25-35°F, Average Yards per Attempt: {avg_yards_25_35}\n')
+        file.write(f'Temperature Range: 35-45°F, Average Yards per Attempt: {avg_yards_35_45}\n')
+        file.write(f'Temperature Range: 45-55°F, Average Yards per Attempt: {avg_yards_45_55}\n')
+        file.write(f'Temperature Range: 55-65°F, Average Yards per Attempt: {avg_yards_55_65}\n')
 
     return avg_yards_25_35, avg_yards_35_45, avg_yards_45_55, avg_yards_55_65
+
 
 def create_bar_chart_for_yards(avg_yards_25_35, avg_yards_35_45, avg_yards_45_55, avg_yards_55_65):
     categories = ['25-35°F', '35-45°F', '45-55°F', '55-65°F']
@@ -153,8 +160,6 @@ def create_scatter_plot(data):
     plt.title('Total Michigan Football Scores vs Yards per Attempt')
     plt.grid(True)
     plt.show()
-
-
 
 def group_data_by_season(data):
     season_data = {}
@@ -216,11 +221,13 @@ def create_seasonal_bar_charts(seasonal_averages):
     plt.ylabel('Average Total Points per Game')
     plt.title('Average Total Points per Game per Season')
     plt.xticks(seasons)  # Ensure each season is labeled
+    plt.show()
 def main():
     db_path = "final18.db"  
     output_file = "avg_scores_by_temperature_range.txt"
     avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65 = calculate_temp_and_score(db_path, output_file)
     create_bar_chart(avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65)
+    output_file = 'avg_ya_by_temperature_range.txt'
     avg_yards_25_35, avg_yards_35_45, avg_yards_45_55, avg_yards_55_65 = calculate_yards_per_attempt(db_path, output_file)
     create_bar_chart_for_yards(avg_yards_25_35, avg_yards_35_45, avg_yards_45_55, avg_yards_55_65)
     data = fetch_data_for_scatter_plot(db_path)

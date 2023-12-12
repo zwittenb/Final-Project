@@ -1,0 +1,4 @@
+Temperature Range: 25-35°F, Average Yards per Attempt: 8.248888888888889
+Temperature Range: 35-45°F, Average Yards per Attempt: 7.415185185185186
+Temperature Range: 45-55°F, Average Yards per Attempt: 6.514210526315789
+Temperature Range: 55-65°F, Average Yards per Attempt: 8.0756
