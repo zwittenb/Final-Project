@@ -44,7 +44,6 @@ def calculate_temp_and_score(db_path, output_file):
     avg_scores_45_55 = sum(scores_45_55) / len(scores_45_55) if scores_25_35 else 0
     avg_scores_55_65 = sum(scores_55_65) / len(scores_55_65) if scores_35_45 else 0
 
-    # Write results to the output file
     with open(output_file, 'w') as file:
         file.write(f"Average scores for 25-35 degrees: {avg_scores_25_35}\n")
         file.write(f"Average scores for 35-45 degrees: {avg_scores_35_45}\n")
@@ -68,7 +67,6 @@ def create_bar_chart(avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_s
 def calculate_yards_per_attempt(db_path, output_file):
     cursor, conn = connect_db(db_path)
 
-    # Modify this query based on your actual table and column names
     query = """
     SELECT 
         weather.temp, michigan_yards_per_attempt.yards_per_attempt
@@ -123,7 +121,6 @@ def create_bar_chart_for_yards(avg_yards_25_35, avg_yards_35_45, avg_yards_45_55
 def fetch_data_for_scatter_plot(db_path):
     cursor, conn = connect_db(db_path)
 
-    # Modify this query to fetch Michigan's score and yards per attempt
     query = """
     SELECT 
         michigans_total_football_score.home_points + michigans_total_football_score.away_points AS total_points,
@@ -158,45 +155,15 @@ def create_scatter_plot(data):
     plt.show()
 
 
-def calculate_correlation(data):
-    total_scores = [item[0] for item in data]
-    yards_per_attempt = [item[1] for item in data]
-
-    correlation_matrix = np.corrcoef(yards_per_attempt, total_scores)
-    correlation_coefficient = correlation_matrix[0, 1]
-    print(correlation_coefficient)
-    return correlation_coefficient
-
-
-
-
-def fetch_data_for_scatter_plot(db_path):
-    cursor, conn = connect_db(db_path)
-
-    query = """
-    SELECT 
-        michigans_total_football_score.home_points + michigans_total_football_score.away_points AS total_points,
-        michigan_yards_per_attempt.yards_per_attempt
-    FROM 
-        michigans_total_football_score
-    INNER JOIN 
-        michigan_yards_per_attempt ON michigans_total_football_score.id = michigan_yards_per_attempt.id
-    """
-
-    cursor.execute(query)
-    results = cursor.fetchall()
-    conn.close()
-
-    return results
 
 def group_data_by_season(data):
     season_data = {}
-    season = 2014  # Start from the 2014 season
+    season = 2014  
     games_per_season = 12
     game_count = 0
 
     for total_points, ya in data:
-        if season > 2022:  # Stop at the 2022 season
+        if season > 2022:  
             break
 
         if season not in season_data:
@@ -239,7 +206,7 @@ def create_seasonal_bar_charts(seasonal_averages):
     plt.xlabel('Season')
     plt.ylabel('Average Yards per Attempt')
     plt.title('Average Yards per Attempt per Season')
-    plt.xticks(seasons)  # Ensure each season is labeled
+    plt.xticks(seasons)  
     plt.show()
 
     # Bar chart for average total points per game
@@ -249,9 +216,8 @@ def create_seasonal_bar_charts(seasonal_averages):
     plt.ylabel('Average Total Points per Game')
     plt.title('Average Total Points per Game per Season')
     plt.xticks(seasons)  # Ensure each season is labeled
-    plt.show()
-if __name__ == "__main__":
-    db_path = "final17.db"  # Replace with your actual database file path
+def main():
+    db_path = "final18.db"  
     output_file = "avg_scores_by_temperature_range.txt"
     avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65 = calculate_temp_and_score(db_path, output_file)
     create_bar_chart(avg_scores_25_35, avg_scores_35_45, avg_scores_45_55, avg_scores_55_65)
@@ -263,3 +229,7 @@ if __name__ == "__main__":
     seasonal_data = group_data_by_season(game_data)
     seasonal_averages = calculate_seasonal_averages(seasonal_data)
     create_seasonal_bar_charts(seasonal_averages)
+
+if __name__ == "__main__":
+   main()
+    

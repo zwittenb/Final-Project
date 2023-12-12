@@ -188,8 +188,8 @@ def get_yards_per_attempt(year):
          ### Skip rows that summarize the yearly average at the end of the season
          if "Games" in date:
              continue
-         pass_att = cells[5].get_text() # Adjust index as needed
-         pass_yds = cells[7].get_text() # Adjust index as needed
+         pass_att = cells[5].get_text()
+         pass_yds = cells[7].get_text() 
          # Check if pass_att is a number and not zero to avoid division by zero
          if pass_att.replace('.', '', 1).isdigit() and int(float(pass_att)) != 0:
              y_a = round(float(pass_yds) / int(float(pass_att)), 2)
