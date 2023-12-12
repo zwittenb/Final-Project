@@ -5,31 +5,13 @@ import os
 from bs4 import BeautifulSoup
 
 
-
-
-
-
 # Global variables for weather data
 weather_url = "http://api.weatherstack.com/historical"
 weather_access_key = "d2d987ae3fc3e98a513120c9c53d2504"
 
-
-
-
-
-
-
-
 # Global variables for football scores
 games_url = "https://api.collegefootballdata.com/games"
 api_key = "zb9nGRo1d1bXtCQGHAsnLwMuJXfnhmMvRQukhexB2KSZpm/G5GQke21V/fQ4qGmq"
-
-
-
-
-
-
-
 
 # Function definitions for weather data
 def get_weather_data(url, access_key, query, date):
@@ -42,18 +24,13 @@ def get_weather_data(url, access_key, query, date):
  data = response.json()['historical'][date]['avgtemp']
  fahrenheit = (data * 1.8) + 32
  return round(fahrenheit, 2)
+#Functions to clean up the weather data
 def get_team_data(url, access_key, team, dates):
  team_data = {}
  for date in dates:
      temperature = get_weather_data(url, access_key, team, date)
      team_data[date] = temperature
  return team_data
-
-
-
-
-
-
 
 
 def clean_up_temp_data():
@@ -92,44 +69,14 @@ def clean_up_temp_data():
      }
  }
 
-
-
-
-
-
-
-
  all_data = {}
-
-
-
-
-
-
-
-
  for team, locations in teams.items():
      for location, dates in locations.items():
          team_data = get_team_data(weather_url, weather_access_key, location, dates)
          all_data.update(team_data)
-
-
-
-
-
-
-
-
  # Sort the final result by date
  sorted_all_data = {date: all_data[date] for date in sorted(all_data.keys())}
  return sorted_all_data
-
-
-
-
-
-
-
 
 # Function definitions for football scores
 def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
@@ -137,9 +84,6 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
   headers = {"Authorization": f"Bearer {api_key}"}
   years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022]
   total_data = {}
-
-
-
 
   for year in years:
       response = requests.get(games_url, params={"team": "Michigan", "year": year}, headers=headers)
@@ -152,41 +96,11 @@ def fetch_and_store_michigan_home_scores(api_key, cursor, conn):
             
   return total_data
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Function to create a database connection
 def create_database():
  conn = sqlite3.connect("final18.db")
  cursor = conn.cursor()
  return cursor, conn
-
-
-
-
-
-
-
 
 # Function to create and populate weather table
 def create_weather_table(cursor, conn, sorted_all_data):
@@ -199,23 +113,9 @@ def create_weather_table(cursor, conn, sorted_all_data):
      ''')
  conn.commit()
 
-
-
-
-
-
-
-
  cursor.execute("SELECT COUNT(*) FROM weather")
  existing_rows = cursor.fetchone()[0]
  counter = 0
-
-
-
-
-
-
-
 
  for date, temperature in sorted_all_data.items():
      counter += 1
@@ -223,23 +123,8 @@ def create_weather_table(cursor, conn, sorted_all_data):
          cursor.execute('''INSERT OR IGNORE INTO weather (temp) VALUES (?)''', (temperature,))
  conn.commit()
 
-
-
-
-
-
-
-
  existing_rows += 25
  conn.commit()
-
-
-
-
-
-
-
-
 
 # Function to create and populate football scores table
 def create_football_scores_table(cursor, conn, total_data):
@@ -255,14 +140,8 @@ def create_football_scores_table(cursor, conn, total_data):
   ''')
   conn.commit()
 
-
-
-
   cursor.execute("SELECT COUNT(*) FROM michigans_total_football_score")
   existing_rows = cursor.fetchone()[0]
-
-
-
 
   counter = 0
   for key, value in total_data.items():
